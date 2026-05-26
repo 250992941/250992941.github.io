@@ -5,6 +5,135 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STTV收藏仓库</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<style>
+ /* 密码遮罩层样式 */
+ #password-overlay {
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ background: rgba(0, 0, 0, 0.9);
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ align-items: center;
+ z-index: 9999;
+ color: #fff;
+ font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+ text-align: center;
+ transition: opacity 0.5s ease;
+ }
+ #password-container {
+ background: rgba(255, 255, 255, 0.1);
+ padding: 30px 40px;
+ border-radius: 20px;
+ backdrop-filter: blur(10px);
+ box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+ }
+ #password-input {
+ padding: 12px 20px;
+ font-size: 18px;
+ border: 2px solid #444;
+ border-radius: 10px;
+ background: rgba(255, 255, 255, 0.2);
+ color: #fff;
+ width: 200px;
+ text-align: center;
+ margin: 20px 0;
+ }
+ #password-input:focus {
+ outline: none;
+ border-color: #42a5f5;
+ box-shadow: 0 0 10px rgba(66, 165, 245, 0.5);
+ }
+ #password-btn {
+ padding: 10px 25px;
+ font-size: 16px;
+ background: #42a5f5;
+ border: none;
+ border-radius: 8px;
+ color: #fff;
+ cursor: pointer;
+ transition: background 0.3s;
+ }
+ #password-btn:hover {
+ background: #2196f3;
+ }
+ .error {
+ color: #ff6b6b;
+ font-size: 14px;
+ margin-top: 10px;
+ display: none;
+ }
+</style>
+
+<script>
+ // 密码验证逻辑
+ document.addEventListener('DOMContentLoaded', function() {
+ const correctPassword = "4567"; // 设置密码为 4567
+ let overlay = document.getElementById('password-overlay');
+ 
+ // 如果没有遮罩层则创建
+ if (!overlay) {
+ overlay = document.createElement('div');
+ overlay.id = 'password-overlay';
+ document.body.appendChild(overlay);
+ }
+ 
+ // 检查是否已经通过验证
+ if (localStorage.getItem('accessGranted') === 'true') {
+ overlay.style.display = 'none';
+ document.body.style.overflow = 'auto';
+ return;
+ }
+
+ // 创建遮罩层 HTML
+ overlay.innerHTML = `
+ <div id="password-container">
+ <h2 style="margin-bottom: 20px; color: #fff;">🔒 请输入访问密码</h2>
+ <input type="password" id="password-input" placeholder="输入密码 4567" maxlength="4">
+ <button id="password-btn">进入</button>
+ <div id="error-message" class="error">密码错误，请重试！</div>
+ </div>
+ `;
+ 
+ document.body.style.overflow = 'hidden'; // 禁止滚动
+
+ const input = document.getElementById('password-input');
+ const btn = document.getElementById('password-btn');
+ const error = document.getElementById('error-message');
+
+ // 按钮点击事件
+ btn.addEventListener('click', checkPassword);
+ 
+ // 回车键事件
+ input.addEventListener('keypress', function(e) {
+ if (e.key === 'Enter') checkPassword();
+ });
+
+ function checkPassword() {
+ const value = input.value.trim();
+ if (value === correctPassword) {
+ localStorage.setItem('accessGranted', 'true');
+ overlay.style.opacity = 0;
+ setTimeout(() => {
+ overlay.style.display = 'none';
+ document.body.style.overflow = 'auto';
+ }, 500);
+ } else {
+ error.style.display = 'block';
+ input.style.borderColor = '#ff6b6b';
+ setTimeout(() => {
+ error.style.display = 'none';
+ input.style.borderColor = '#444';
+ }, 2000);
+ }
+ }
+ });
+</script>
+
     <script>
         var _hmt = _hmt || [];
         (function() {
@@ -545,7 +674,8 @@
         }
     </style>
 </head>
-<body>
+<body id="main-body">
+
     <div class="video-container">
         <video id="video-bg" autoplay muted loop playsinline>
             <source src="https://dogpan.com/f/9rZEs2/%E7%BA%A2%E8%89%B2%E6%B8%90%E5%8F%98%E8%83%8C%E6%99%AF%E8%A7%86%E9%A2%91%E7%B4%A0%E6%9D%90%20%E7%BA%A2%E8%89%B2%E8%83%8C%E6%99%AF%E9%87%91%E8%89%B2%E7%B2%92%E5%AD%90%E6%B8%90%E5%8F%98%E8%83%8C%E6%99%AF%E8%A7%86%E9%A2%91%E7%B4%A0%E6%9D%90_%E7%88%B1%E7%BB%99%E7%BD%91_aigei_com.mp4" type="video/mp4">
@@ -1084,3 +1214,4 @@
     </script>
 </body>
 </html>
+
